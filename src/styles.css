@@ -1,0 +1,458 @@
+/* ============================================
+   1. VARIABLES — cambia estos valores y
+      todo el sitio cambia de color
+   ============================================ */
+:root {
+  --marca: #7c3f1d; /* color principal */
+  --marca-claro: #a9714a;
+  --acento: #e8b647; /* botones y detalles */
+  --fondo: #fdfbf7;
+  --superficie: #ffffff;
+  --texto: #2b2118;
+  --texto-suave: #7a6a5c;
+  --borde: #e8e0d5;
+  --error: #c0392b;
+  --exito: #1e7a4b;
+  --radio: 14px;
+  --sombra: 0 4px 16px rgba(43, 33, 24, 0.08);
+}
+
+/* ============================================
+     2. BASE
+     ============================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+.seccion {
+  padding: 3.5rem 0;
+}
+.seccion h2 {
+  font-size: 1.9rem;
+  margin: 0 0 0.5rem;
+}
+.seccion__intro {
+  color: var(--texto-suave);
+  margin: 0 0 2.5rem;
+  max-width: 44rem;
+}
+
+/* Estructura de página: el footer siempre abajo */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.layout main {
+  flex: 1;
+}
+
+/* ============================================
+     3. BOTONES
+     ============================================ */
+.boton {
+  display: inline-block;
+  background: var(--marca);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 1.75rem;
+  border-radius: var(--radio);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.boton:hover {
+  transform: translateY(-2px);
+}
+.boton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+.boton--acento {
+  background: var(--acento);
+  color: var(--texto);
+}
+.boton--borde {
+  background: transparent;
+  color: var(--marca);
+  border: 1.5px solid var(--marca);
+}
+
+/* ============================================
+     4. NAVBAR
+     ============================================ */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.navbar__marca {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--marca);
+}
+.navbar__links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.navbar__links a {
+  color: var(--texto-suave);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.navbar__links a:hover {
+  color: var(--marca);
+}
+/* Clase del enlace activo — así se resalta la página actual */
+.navbar__links a.activo {
+  color: var(--marca);
+  border-bottom-color: var(--acento);
+}
+
+/* ============================================
+     5. HERO (portada)
+     ============================================ */
+.hero {
+  text-align: center;
+  padding: 5rem 1.25rem 4rem;
+  background: linear-gradient(180deg, #f6ede1 0%, var(--fondo) 100%);
+}
+.hero__etiqueta {
+  display: inline-block;
+  background: var(--acento);
+  color: var(--texto);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 1.25rem;
+}
+.hero h1 {
+  font-size: clamp(2rem, 6vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0 0 1rem;
+}
+.hero p {
+  color: var(--texto-suave);
+  font-size: 1.15rem;
+  max-width: 34rem;
+  margin: 0 auto 2rem;
+}
+
+/* ============================================
+     6. REJILLAS Y TARJETAS
+     ============================================ */
+.rejilla {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  padding: 1.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tarjeta:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sombra);
+}
+.tarjeta__emoji {
+  font-size: 2.5rem;
+}
+.tarjeta__categoria {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--texto-suave);
+  font-weight: 700;
+}
+.tarjeta h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.tarjeta p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+.tarjeta__precio {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--marca);
+}
+
+/* Beneficios */
+.beneficio {
+  text-align: center;
+  padding: 1.5rem;
+}
+.beneficio__icono {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.beneficio h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+.beneficio p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.92rem;
+}
+
+/* Equipo */
+.miembro {
+  text-align: center;
+}
+.miembro__avatar {
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 0.85rem;
+  border-radius: 50%;
+  background: var(--marca);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+}
+.miembro h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1rem;
+}
+.miembro p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.88rem;
+}
+
+/* ============================================
+     7. FILTROS
+     ============================================ */
+.filtros {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.filtro {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--borde);
+  background: var(--superficie);
+  color: var(--texto-suave);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+}
+.filtro:hover {
+  border-color: var(--marca-claro);
+}
+.filtro.activo {
+  background: var(--marca);
+  color: #fff;
+  border-color: var(--marca);
+}
+
+/* ============================================
+     8. DETALLE DE PRODUCTO
+     ============================================ */
+.detalle {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) {
+  .detalle {
+    grid-template-columns: 320px 1fr;
+    align-items: start;
+  }
+}
+.detalle__imagen {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio);
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  font-size: 6rem;
+}
+.detalle h1 {
+  margin: 0.3rem 0 0.75rem;
+  font-size: 2rem;
+}
+.detalle__precio {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--marca);
+  margin: 1rem 0;
+}
+.notas {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.notas li {
+  background: #f6ede1;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.82rem;
+  color: var(--marca);
+  font-weight: 600;
+}
+.volver {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}
+.volver:hover {
+  color: var(--marca);
+}
+
+/* ============================================
+     9. FORMULARIO
+     ============================================ */
+.formulario {
+  max-width: 32rem;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.2rem;
+}
+.campo label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: var(--superficie);
+  color: var(--texto);
+}
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  outline: 2px solid var(--marca-claro);
+  outline-offset: 1px;
+}
+.campo--error input,
+.campo--error select,
+.campo--error textarea {
+  border-color: var(--error);
+}
+.mensaje-error {
+  color: var(--error);
+  font-size: 0.82rem;
+}
+.ayuda {
+  color: var(--texto-suave);
+  font-size: 0.82rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.checkbox input {
+  margin-top: 0.25rem;
+}
+
+.exito {
+  background: #eaf7f0;
+  border: 1px solid var(--exito);
+  color: var(--exito);
+  padding: 1.5rem;
+  border-radius: var(--radio);
+}
+.exito h3 {
+  margin: 0 0 0.5rem;
+}
+.exito p {
+  margin: 0 0 0.4rem;
+  color: inherit;
+}
+
+/* ============================================
+     10. ESTADOS VACÍOS Y FOOTER
+     ============================================ */
+.vacio {
+  text-align: center;
+  color: var(--texto-suave);
+  padding: 3rem 1rem;
+}
+
+.footer {
+  background: var(--superficie);
+  border-top: 1px solid var(--borde);
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 0.88rem;
+}
+.footer__marca {
+  font-weight: 800;
+  color: var(--marca);
+  font-size: 1.05rem;
+}
