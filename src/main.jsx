@@ -3,10 +3,8 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import './styles.css';
 
-console.log('MAIN.JSX SE ESTÁ EJECUTANDO');
-
 createRoot(document.getElementById('root')).render(
-  <BrowserRouter>
+  <BrowserRouter basename="/ejercicio-con-react">
     <App />
   </BrowserRouter>
 );
