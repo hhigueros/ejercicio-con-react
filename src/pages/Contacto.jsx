@@ -1,19 +1,212 @@
 import { useState } from 'react';
 import { useTitulo } from '../hooks/useTitulo.js';
-const VACIO={nombre:'',correo:'',motivo:'',mensaje:'',acepta:false};
-export default function Contacto(){
- useTitulo('Contacto'); const [datos,setDatos]=useState(VACIO); const [tocado,setTocado]=useState({}); const [enviado,setEnviado]=useState(false);
- const errores={nombre:datos.nombre.trim().length<3?'Escribe al menos 3 caracteres':'',correo:!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(datos.correo)?'Escribe un correo válido':'',motivo:!datos.motivo?'Selecciona un motivo':'',mensaje:datos.mensaje.trim().length<12?'Escribe al menos 12 caracteres':'',acepta:!datos.acepta?'Debes aceptar esta condición':''};
- const valido=Object.values(errores).every(v=>!v);
- const cambio=e=>{const {name,value,type,checked}=e.target;setDatos(d=>({...d,[name]:type==='checkbox'?checked:value}))};
- const enviar=e=>{e.preventDefault();if(!valido){setTocado({nombre:true,correo:true,motivo:true,mensaje:true,acepta:true});return;}setEnviado(true)};
- if(enviado)return <div className="contenedor seccion"><div className="exito"><span>✓</span><h1>Mensaje preparado</h1><p>Gracias, {datos.nombre}. Esta demostración validó correctamente tu información.</p></div><button className="boton boton--secundario" onClick={()=>{setDatos(VACIO);setTocado({});setEnviado(false)}}>Escribir otro</button></div>;
- const campo=(n)=>tocado[n]&&errores[n];
- return <div className="contenedor seccion contacto-grid"><div><span className="eyebrow">CONTACTO</span><h1>¿Tienes una recomendación?</h1><p className="lead">Cuéntanos qué mejorarías de Página Abierta o qué tipo de libros te gustaría encontrar.</p><div className="nota"><strong>Proyecto académico</strong><p>Este formulario demuestra manejo de estado y validación. No envía información a un servidor.</p></div></div>
- <form className="formulario" onSubmit={enviar} noValidate>
- {['nombre','correo'].map(n=><div className={campo(n)?'campo campo--error':'campo'} key={n}><label htmlFor={n}>{n==='nombre'?'Nombre':'Correo electrónico'}</label><input id={n} name={n} type={n==='correo'?'email':'text'} value={datos[n]} onChange={cambio} onBlur={()=>setTocado(t=>({...t,[n]:true}))}/>{campo(n)&&<small>{errores[n]}</small>}</div>)}
- <div className={campo('motivo')?'campo campo--error':'campo'}><label htmlFor="motivo">Motivo</label><select id="motivo" name="motivo" value={datos.motivo} onChange={cambio} onBlur={()=>setTocado(t=>({...t,motivo:true}))}><option value="">Selecciona</option><option>Sugerencia de libro</option><option>Comentario del sitio</option><option>Otro</option></select>{campo('motivo')&&<small>{errores.motivo}</small>}</div>
- <div className={campo('mensaje')?'campo campo--error':'campo'}><label htmlFor="mensaje">Mensaje</label><textarea id="mensaje" name="mensaje" rows="5" maxLength="400" value={datos.mensaje} onChange={cambio} onBlur={()=>setTocado(t=>({...t,mensaje:true}))}/><span className="contador">{datos.mensaje.length}/400</span>{campo('mensaje')&&<small>{errores.mensaje}</small>}</div>
- <label className="checkbox"><input type="checkbox" name="acepta" checked={datos.acepta} onChange={cambio}/> Entiendo que este formulario es una demostración académica.</label>{campo('acepta')&&<small className="mensaje-error">{errores.acepta}</small>}
- <button className="boton" type="submit">Validar mensaje</button></form></div>;
+
+const FORM_VACIO = {
+  nombre: '',
+  correo: '',
+  interes: '',
+  mensaje: '',
+  acepta: false,
+};
+
+export default function Contacto() {
+  useTitulo('Contacto');
+
+  // aquí sigue TODO lo que ya tenías
+  const [datos, setDatos] = useState(FORM_VACIO);
+  const [tocado, setTocado] = useState({});
+  const [enviado, setEnviado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+
+  // ---------- Validación: se CALCULA en cada render ----------
+  const errores = {
+    nombre:
+      datos.nombre.trim().length < 3
+        ? 'Escribe tu nombre (mínimo 3 letras)'
+        : '',
+    correo: !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(datos.correo)
+      ? 'Escribe un correo válido, por ejemplo ana@correo.com'
+      : '',
+    interes: datos.interes === '' ? 'Elige un motivo de contacto' : '',
+    mensaje:
+      datos.mensaje.trim().length < 10
+        ? 'Cuéntanos un poco más (mínimo 10 caracteres)'
+        : '',
+    acepta: !datos.acepta ? 'Debes aceptar para poder responderte' : '',
+  };
+
+  const esValido = Object.values(errores).every((e) => e === '');
+
+  // ---------- Un solo manejador para TODOS los campos ----------
+  function manejarCambio(evento) {
+    const { name, value, type, checked } = evento.target;
+    setDatos((previos) => ({
+      ...previos,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  }
+
+  function marcarTocado(evento) {
+    setTocado((previos) => ({ ...previos, [evento.target.name]: true }));
+  }
+
+  function mostrarError(campo) {
+    return tocado[campo] && errores[campo] !== '';
+  }
+
+  // ---------- Procesar el envío ----------
+  async function manejarEnvio(evento) {
+    evento.preventDefault(); // evita que se recargue la página
+
+    if (!esValido) {
+      // marca todos los campos como tocados para mostrar todos los errores
+      setTocado({
+        nombre: true,
+        correo: true,
+        interes: true,
+        mensaje: true,
+        acepta: true,
+      });
+      return;
+    }
+
+    setEnviando(true);
+    console.log('Datos recibidos del formulario:', datos);
+    await new Promise((r) => setTimeout(r, 700)); // simula el envío al servidor
+    setEnviando(false);
+    setEnviado(true);
+  }
+
+  function nuevoMensaje() {
+    setDatos(FORM_VACIO);
+    setTocado({});
+    setEnviado(false);
+  }
+
+  // ---------- Pantalla de éxito ----------
+  if (enviado) {
+    return (
+      <div className="contenedor seccion">
+        <div className="exito">
+          <h3>✅ ¡Gracias, {datos.nombre}!</h3>
+          <p>
+            Recibimos tu mensaje sobre <strong>{datos.interes}</strong>.
+          </p>
+          <p>
+            Te responderemos a <strong>{datos.correo}</strong> en menos de 24
+            horas.
+          </p>
+        </div>
+        <p style={{ marginTop: '1.5rem' }}>
+          <button className="boton boton--borde" onClick={nuevoMensaje}>
+            Enviar otro mensaje
+          </button>
+        </p>
+      </div>
+    );
+  }
+
+  // ---------- El formulario ----------
+  return (
+    <div className="contenedor seccion">
+      <h2>Hablemos</h2>
+      <p className="seccion__intro">
+        ¿Quieres hacer un pedido, vender Raíz en tu negocio o solo saludar?
+        Escríbenos.
+      </p>
+
+      <form className="formulario" onSubmit={manejarEnvio} noValidate>
+        <div
+          className={mostrarError('nombre') ? 'campo campo--error' : 'campo'}
+        >
+          <label htmlFor="nombre">Nombre completo</label>
+          <input
+            id="nombre"
+            name="nombre"
+            type="text"
+            value={datos.nombre}
+            onChange={manejarCambio}
+            onBlur={marcarTocado}
+            placeholder="Ana Rodríguez"
+          />
+          {mostrarError('nombre') && (
+            <span className="mensaje-error">{errores.nombre}</span>
+          )}
+        </div>
+
+        <div
+          className={mostrarError('correo') ? 'campo campo--error' : 'campo'}
+        >
+          <label htmlFor="correo">Correo electrónico</label>
+          <input
+            id="correo"
+            name="correo"
+            type="email"
+            value={datos.correo}
+            onChange={manejarCambio}
+            onBlur={marcarTocado}
+            placeholder="ana@correo.com"
+          />
+          {mostrarError('correo') && (
+            <span className="mensaje-error">{errores.correo}</span>
+          )}
+        </div>
+
+        <div
+          className={mostrarError('interes') ? 'campo campo--error' : 'campo'}
+        >
+          <label htmlFor="interes">Motivo</label>
+          <select
+            id="interes"
+            name="interes"
+            value={datos.interes}
+            onChange={manejarCambio}
+            onBlur={marcarTocado}
+          >
+            <option value="">Elige una opción</option>
+            <option value="pedido">Hacer un pedido</option>
+            <option value="mayoreo">Comprar al por mayor</option>
+            <option value="alianza">Vender Raíz en mi negocio</option>
+            <option value="otro">Otro</option>
+          </select>
+          {mostrarError('interes') && (
+            <span className="mensaje-error">{errores.interes}</span>
+          )}
+        </div>
+
+        <div
+          className={mostrarError('mensaje') ? 'campo campo--error' : 'campo'}
+        >
+          <label htmlFor="mensaje">Mensaje</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            rows="4"
+            value={datos.mensaje}
+            onChange={manejarCambio}
+            onBlur={marcarTocado}
+            placeholder="Cuéntanos qué necesitas…"
+          />
+          <span className="ayuda">{datos.mensaje.length} caracteres</span>
+          {mostrarError('mensaje') && (
+            <span className="mensaje-error">{errores.mensaje}</span>
+          )}
+        </div>
+
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            name="acepta"
+            checked={datos.acepta}
+            onChange={manejarCambio}
+          />
+          Acepto que usen mi correo para responder a esta consulta.
+        </label>
+
+        <button className="boton" type="submit" disabled={enviando}>
+          {enviando ? 'Enviando…' : 'Enviar mensaje'}
+        </button>
+      </form>
+    </div>
+  );
 }
