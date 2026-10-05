@@ -1,8 +1,12 @@
-import { Link } from 'react-router-dom';
 export default function SiteFooter() {
-  return <footer className="footer"><div className="contenedor footer__grid">
-    <div><p className="footer__marca">Página Abierta</p><p>Un proyecto académico para descubrir libros usando datos abiertos.</p></div>
-    <div><p className="footer__titulo">Enlaces</p><Link to="/explorar">Explorar</Link><Link to="/privacidad">Privacidad</Link></div>
-    <div><p className="footer__titulo">Datos</p><p>Información bibliográfica consultada desde Open Library.</p></div>
-  </div><p className="footer__copy">© {new Date().getFullYear()} Página Abierta · Proyecto académico</p></footer>;
+  const anio = new Date().getFullYear();
+
+  return (
+    <footer className="footer">
+      <p className="footer__marca">🌱 Raíz</p>
+      <p>Café de origen guatemalteco · Ciudad de Guatemala</p>
+      <p>hola@raiz.gt · +502 5555 5555</p>
+      <p>© {anio} Raíz. Proyecto académico.</p>
+    </footer>
+  );
 }
