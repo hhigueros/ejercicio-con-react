@@ -1,0 +1,35 @@
+name: Medición antes y después
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/mediciones.yml'
+jobs:
+  medir:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - nombre: antes
+            ref: e41b4517ea86d7ef1665202d724b0179cd279e46
+            url: http://127.0.0.1:5173/
+          - nombre: despues
+            ref: e43540451008fbdf22ae704230f41d16135f9de5
+            url: http://127.0.0.1:5173/ejercicio-con-react/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Iniciar sitio
+        run: |
+          npm run dev -- --host 127.0.0.1 > /tmp/vite.log 2>&1 &
+          sleep 5
+      - name: Medir Lighthouse
+        run: |
+          npx --yes lighthouse "${{ matrix.url }}" --chrome-flags="--headless --no-sandbox" --output=json --output-path="/tmp/${{ matrix.nombre }}.json" --quiet
+          node -e "const r=require('/tmp/${{ matrix.nombre }}.json'); const c=r.categories; console.log('RESULTADO ${{ matrix.nombre }}: performance='+Math.round(c.performance.score*100)+', accessibility='+Math.round(c.accessibility.score*100)+', best-practices='+Math.round(c['best-practices'].score*100)+', seo='+Math.round(c.seo.score*100));"
