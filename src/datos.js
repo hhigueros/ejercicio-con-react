@@ -112,6 +112,7 @@ export const EQUIPO = [
 export const ENLACES = [
   { id: 'inicio', texto: 'Inicio', ruta: '/' },
   { id: 'productos', texto: 'Productos', ruta: '/productos' },
+  { id: 'recomendados', texto: 'Recomendados', ruta: '/recomendados' },
   { id: 'nosotros', texto: 'Nosotros', ruta: '/nosotros' },
   { id: 'contacto', texto: 'Contacto', ruta: '/contacto' },
 ];
