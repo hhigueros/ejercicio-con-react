@@ -5,7 +5,7 @@ import TarjetaLibro from '../components/TarjetaLibro.jsx';
 
 export default function Explorar() {
   useTitulo('Explorar');
-  const [consulta, setConsulta] = useState('Guatemala');
+  const [consulta, setConsulta] = useState('');
   const { cargando, error, libros } = useLibros(consulta);
 
   return <div className="contenedor seccion explorar">
