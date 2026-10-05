@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/mediciones.yml'
+      - 'src/**'
+      - 'index.html'
 jobs:
   medir:
     runs-on: ubuntu-latest
@@ -14,7 +16,7 @@ jobs:
             ref: e41b4517ea86d7ef1665202d724b0179cd279e46
             url: http://127.0.0.1:5173/
           - nombre: despues
-            ref: e43540451008fbdf22ae704230f41d16135f9de5
+            ref: main
             url: http://127.0.0.1:5173/ejercicio-con-react/
     steps:
       - uses: actions/checkout@v4
@@ -32,4 +34,9 @@ jobs:
       - name: Medir Lighthouse
         run: |
           npx --yes lighthouse "${{ matrix.url }}" --chrome-flags="--headless --no-sandbox" --output=json --output-path="/tmp/${{ matrix.nombre }}.json" --quiet
-          node -e "const r=require('/tmp/${{ matrix.nombre }}.json'); const c=r.categories; console.log('RESULTADO ${{ matrix.nombre }}: performance='+Math.round(c.performance.score*100)+', accessibility='+Math.round(c.accessibility.score*100)+', best-practices='+Math.round(c['best-practices'].score*100)+', seo='+Math.round(c.seo.score*100));"
+          node - <<'NODE'
+          const r=require('/tmp/${{ matrix.nombre }}.json');
+          const c=r.categories;
+          console.log('RESULTADO ${{ matrix.nombre }}: performance='+Math.round(c.performance.score*100)+', accessibility='+Math.round(c.accessibility.score*100)+', best-practices='+Math.round(c['best-practices'].score*100)+', seo='+Math.round(c.seo.score*100));
+          for (const [id,a] of Object.entries(r.audits)) if (a.score !== null && a.score < 1 && ['accessibility','best-practices'].some(cat => c[cat]?.auditRefs?.some(x=>x.id===id))) console.log('FALLO', id, a.title, a.displayValue || '');
+          NODE
