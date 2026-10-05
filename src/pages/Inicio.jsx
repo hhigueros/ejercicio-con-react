@@ -1,64 +1,21 @@
 import { Link } from 'react-router-dom';
-import { PRODUCTOS, BENEFICIOS } from '../datos.js';
-import TarjetaProducto from '../components/TarjetaProducto.jsx';
+import { GENEROS, PASOS } from '../datos.js';
 import { useTitulo } from '../hooks/useTitulo.js';
 
 export default function Inicio() {
-  // Estado derivado: filtramos los destacados en el momento
-  const destacados = PRODUCTOS.filter((p) => p.destacado);
-
-  return (
-    <>
-      {/* ---------- Portada ---------- */}
-      <header className="hero">
-        <span className="hero__etiqueta">Tueste artesanal</span>
-        <h1>Café que nace en casa</h1>
-        <p>
-          Granos de altura seleccionados en fincas guatemaltecas y tostados cada
-          semana por manos locales.
-        </p>
-        <Link className="boton" to="/productos">
-          Ver productos
-        </Link>
-      </header>
-
-      {/* ---------- Beneficios ---------- */}
-      <section className="contenedor seccion">
-        <h2>Por qué Raíz</h2>
-        <p className="seccion__intro">
-          Trabajamos directo con las familias productoras, sin intermediarios.
-        </p>
-
-        <div className="rejilla">
-          {BENEFICIOS.map((b) => (
-            <article key={b.id} className="beneficio">
-              <span className="beneficio__icono" aria-hidden="true">
-                {b.icono}
-              </span>
-              <h3>{b.titulo}</h3>
-              <p>{b.texto}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* ---------- Destacados ---------- */}
-      <section className="contenedor seccion">
-        <h2>Nuestros favoritos</h2>
-        <p className="seccion__intro">Los dos que más nos piden.</p>
-
-        <div className="rejilla">
-          {destacados.map((producto) => (
-            <TarjetaProducto key={producto.id} producto={producto} />
-          ))}
-        </div>
-
-        <p style={{ marginTop: '2rem' }}>
-          <Link className="boton boton--borde" to="/productos">
-            Ver todo el catálogo
-          </Link>
-        </p>
-      </section>
-    </>
-  );
+  useTitulo('Inicio');
+  return <>
+    <header className="hero"><div className="contenedor hero__contenido">
+      <span className="eyebrow">LECTURAS · IDEAS · DESCUBRIMIENTOS</span>
+      <h1>Tu próxima historia puede empezar con una búsqueda.</h1>
+      <p>Explora libros, autores y ediciones de distintas épocas usando información bibliográfica abierta.</p>
+      <div className="hero__acciones"><Link className="boton" to="/explorar">Explorar biblioteca</Link><Link className="boton boton--claro" to="/nosotros">Conocer el proyecto</Link></div>
+    </div></header>
+    <section className="contenedor seccion"><div className="encabezado-seccion"><span>PARA EXPLORAR</span><h2>Empieza por una curiosidad</h2></div>
+      <div className="generos">{GENEROS.map(g=><article className="genero" key={g.titulo}><span>{g.icono}</span><h3>{g.titulo}</h3><p>{g.texto}</p></article>)}</div>
+    </section>
+    <section className="franja"><div className="contenedor seccion"><div className="encabezado-seccion"><span>ASÍ FUNCIONA</span><h2>De una palabra a una nueva lectura</h2></div>
+      <div className="pasos">{PASOS.map(p=><article key={p.numero}><b>{p.numero}</b><h3>{p.titulo}</h3><p>{p.texto}</p></article>)}</div>
+    </div></section>
+  </>;
 }
